@@ -5,5 +5,5 @@ import org.springframework.data.repository.CrudRepository;
 
 public interface UsersRepository extends CrudRepository<AppUser, Long>{
     public boolean existsByAuthId(String authId);
-    public AppUser getByAuthId(String authId);
+    public AppUser findByAuthId(String authId);
 }

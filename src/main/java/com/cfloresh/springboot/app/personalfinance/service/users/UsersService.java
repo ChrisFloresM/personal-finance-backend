@@ -15,6 +15,7 @@ public class UsersService {
         this.repository = usersRepository;
     }
 
+    /* TODO this method might not be used more than for testing purposes */
     public String registerUser( Jwt jwt) {
         String authId = jwt.getClaim("sub");
 
@@ -26,5 +27,17 @@ public class UsersService {
         repository.save(newUser);
 
         return "User succesfully registered";
+    }
+
+    public AppUser findUser(String authId) {
+        AppUser user = repository.findByAuthId(authId);
+        if (user != null) return user;
+
+        user = new AppUser();
+        user.setAuthId(authId);
+
+        repository.save(user);
+
+        return user;
     }
 }

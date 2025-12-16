@@ -24,7 +24,6 @@ public class Transaction {
     private String avatar;
     private String name;
     private String category;
-
     private LocalDate date;
 
     @Column(precision = 12, scale = 2, nullable = false)
