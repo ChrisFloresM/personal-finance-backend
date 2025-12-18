@@ -1,15 +1,20 @@
 package com.cfloresh.springboot.app.personalfinance.service.transactions;
 
 import com.cfloresh.springboot.app.personalfinance.dto.TransactionsDto;
+import com.cfloresh.springboot.app.personalfinance.dto.TransactionResponseDto;
 import com.cfloresh.springboot.app.personalfinance.mapper.TransactionsMapper;
 import com.cfloresh.springboot.app.personalfinance.model.transactions.Transaction;
 import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import com.cfloresh.springboot.app.personalfinance.repository.transactions.TransactionsRespository;
 import com.cfloresh.springboot.app.personalfinance.service.users.UsersService;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class TransactionsService {
@@ -29,24 +34,44 @@ public class TransactionsService {
         Transaction transaction = new Transaction();
 
         transaction.setUser(user);
-        transaction.setAvatar(data.avatar());
-        transaction.setName(data.name());
-        transaction.setCategory(data.category());
-        transaction.setDate(data.date());
-        transaction.setAmount(data.amount());
-        transaction.setRecurring(data.recurring());
+        setTransactionData(transaction, data);
 
         Transaction savedTransaction = repository.save(transaction);
 
         return TransactionsMapper.toDto(savedTransaction);
     }
 
-    public List<TransactionsDto> getAllUserTransactions(Jwt jwt) {
+    public List<TransactionResponseDto> getAllUserTransactions(Jwt jwt) {
         AppUser user = usersService.findUser(jwt.getClaim("sub"));
         List<Transaction> transactions = repository.findAllByUserId(user.getId());
 
-        return transactions.stream().map(TransactionsMapper::toDto).toList();
+        return transactions.stream().map(TransactionsMapper::toResponseDto).toList();
     }
 
+
+    public TransactionResponseDto editTransaction(Jwt jwt, Long transactionId,
+                                                  TransactionsDto data) {
+        AppUser user = usersService.findUser(jwt.getClaim("sub"));
+
+        Transaction transaction =
+                repository.findByIdAndUser_Id(transactionId, user.getId()).orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Transaction not found"));
+
+
+        setTransactionData(transaction, data);
+        Transaction savedTransaction = repository.save(transaction);
+
+        return TransactionsMapper.toResponseDto(savedTransaction);
+    }
+
+    private void setTransactionData(Transaction transaction, TransactionsDto data) {
+        transaction.setAvatar(data.avatar());
+        transaction.setName(data.name());
+        transaction.setCategory(data.category());
+        transaction.setDate(data.date());
+        transaction.setAmount(data.amount());
+        transaction.setRecurring(data.recurring());
+    }
 
 }
