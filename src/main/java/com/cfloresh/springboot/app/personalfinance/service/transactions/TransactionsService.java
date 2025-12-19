@@ -7,6 +7,7 @@ import com.cfloresh.springboot.app.personalfinance.model.transactions.Transactio
 import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import com.cfloresh.springboot.app.personalfinance.repository.transactions.TransactionsRespository;
 import com.cfloresh.springboot.app.personalfinance.service.users.UsersService;
+import jakarta.transaction.Transactional;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -63,6 +64,14 @@ public class TransactionsService {
         Transaction savedTransaction = repository.save(transaction);
 
         return TransactionsMapper.toResponseDto(savedTransaction);
+    }
+
+    @Transactional
+    public void deleteTransaction(Jwt jwt, Long transactionId) {
+
+        AppUser user = usersService.findUser(jwt.getClaim("sub"));
+
+        repository.deleteByIdAndUser_Id(transactionId, user.getId());
     }
 
     private void setTransactionData(Transaction transaction, TransactionsDto data) {

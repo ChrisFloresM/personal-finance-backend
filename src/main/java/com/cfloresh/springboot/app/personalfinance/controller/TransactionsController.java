@@ -4,6 +4,8 @@ import com.cfloresh.springboot.app.personalfinance.dto.TransactionsDto;
 import com.cfloresh.springboot.app.personalfinance.dto.TransactionResponseDto;
 import com.cfloresh.springboot.app.personalfinance.service.transactions.TransactionsService;
 import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -30,7 +32,7 @@ public class TransactionsController {
 
     @GetMapping()
     public ResponseEntity<List<TransactionResponseDto>> getAllUserTransactions(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.ok(service.getAllUserTransactions(jwt));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.getAllUserTransactions(jwt));
     }
 
     @PutMapping("/{transactionId}")
@@ -38,7 +40,15 @@ public class TransactionsController {
                                                              @PathVariable Long transactionId,
                                                              @RequestBody TransactionsDto data) {
 
-        return ResponseEntity.ok(service.editTransaction(jwt, transactionId, data));
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.editTransaction(jwt, transactionId, data));
+    }
 
+    @DeleteMapping("/{transactionId}")
+    public ResponseEntity<Void> deleteById(@AuthenticationPrincipal Jwt jwt,
+                                           @PathVariable Long transactionId) {
+
+        service.deleteTransaction(jwt, transactionId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).build();
     }
 }
