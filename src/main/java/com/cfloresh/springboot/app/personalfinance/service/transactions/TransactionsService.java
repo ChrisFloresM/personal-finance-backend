@@ -1,5 +1,6 @@
 package com.cfloresh.springboot.app.personalfinance.service.transactions;
 
+import com.cfloresh.springboot.app.personalfinance.dto.TransactionPageResponseDto;
 import com.cfloresh.springboot.app.personalfinance.dto.TransactionsDto;
 import com.cfloresh.springboot.app.personalfinance.dto.TransactionResponseDto;
 import com.cfloresh.springboot.app.personalfinance.mapper.TransactionsMapper;
@@ -8,8 +9,10 @@ import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import com.cfloresh.springboot.app.personalfinance.repository.transactions.TransactionsRespository;
 import com.cfloresh.springboot.app.personalfinance.service.users.UsersService;
 import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
@@ -21,6 +24,8 @@ import java.util.Optional;
 public class TransactionsService {
     private final TransactionsRespository repository;
     private final UsersService usersService;
+
+    private final int PAGE_SIZE = 10;
 
     public TransactionsService(TransactionsRespository repository, UsersService usersService) {
         this.repository = repository;
@@ -42,11 +47,15 @@ public class TransactionsService {
         return TransactionsMapper.toDto(savedTransaction);
     }
 
-    public List<TransactionResponseDto> getAllUserTransactions(Jwt jwt) {
+    public TransactionPageResponseDto getAllUserTransactions(Jwt jwt, int pageNumber) {
         AppUser user = usersService.findUser(jwt.getClaim("sub"));
-        List<Transaction> transactions = repository.findAllByUserId(user.getId());
+        Page<Transaction> pageTransactions = repository.findAllByUserId(user.getId(),
+                PageRequest.of(pageNumber, PAGE_SIZE,
+                        Sort.by("date").descending().and(Sort.by("id").descending())));
 
-        return transactions.stream().map(TransactionsMapper::toResponseDto).toList();
+        int totalPages = pageTransactions.getTotalPages();
+
+        return new TransactionPageResponseDto(pageTransactions.stream().map(TransactionsMapper::toResponseDto).toList(), totalPages);
     }
 
 

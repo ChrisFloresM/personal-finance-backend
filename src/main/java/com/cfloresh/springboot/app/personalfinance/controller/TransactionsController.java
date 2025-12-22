@@ -1,5 +1,6 @@
 package com.cfloresh.springboot.app.personalfinance.controller;
 
+import com.cfloresh.springboot.app.personalfinance.dto.TransactionPageResponseDto;
 import com.cfloresh.springboot.app.personalfinance.dto.TransactionsDto;
 import com.cfloresh.springboot.app.personalfinance.dto.TransactionResponseDto;
 import com.cfloresh.springboot.app.personalfinance.service.transactions.TransactionsService;
@@ -31,8 +32,10 @@ public class TransactionsController {
     }
 
     @GetMapping()
-    public ResponseEntity<List<TransactionResponseDto>> getAllUserTransactions(@AuthenticationPrincipal Jwt jwt) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.getAllUserTransactions(jwt));
+    public ResponseEntity<TransactionPageResponseDto> getAllUserTransactions(@AuthenticationPrincipal Jwt jwt,
+                                                                             @RequestParam("page") int pageNumber) {
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.getAllUserTransactions(jwt,
+                pageNumber));
     }
 
     @PutMapping("/{transactionId}")

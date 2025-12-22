@@ -1,13 +1,14 @@
 package com.cfloresh.springboot.app.personalfinance.repository.transactions;
 
 import com.cfloresh.springboot.app.personalfinance.model.transactions.Transaction;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import java.util.List;
 import java.util.Optional;
 
 public interface TransactionsRespository extends JpaRepository<Transaction, Long> {
-    public List<Transaction> findAllByUserId(Long userId);
+    public Page<Transaction> findAllByUserId(Long userId, Pageable pageable);
 
     public Optional<Transaction> findByIdAndUser_Id(Long transactionId, Long userId);
 
