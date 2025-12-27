@@ -5,6 +5,7 @@ import com.cfloresh.springboot.app.personalfinance.dto.TransactionsDto;
 import com.cfloresh.springboot.app.personalfinance.dto.TransactionResponseDto;
 import com.cfloresh.springboot.app.personalfinance.mapper.TransactionsMapper;
 import com.cfloresh.springboot.app.personalfinance.model.transactions.Transaction;
+import com.cfloresh.springboot.app.personalfinance.model.transactions.TransactionSort;
 import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import com.cfloresh.springboot.app.personalfinance.repository.transactions.TransactionsRespository;
 import com.cfloresh.springboot.app.personalfinance.service.users.UsersService;
@@ -24,8 +25,6 @@ import java.util.Optional;
 public class TransactionsService {
     private final TransactionsRespository repository;
     private final UsersService usersService;
-
-    private final int PAGE_SIZE = 10;
 
     public TransactionsService(TransactionsRespository repository, UsersService usersService) {
         this.repository = repository;
@@ -47,11 +46,14 @@ public class TransactionsService {
         return TransactionsMapper.toDto(savedTransaction);
     }
 
-    public TransactionPageResponseDto getAllUserTransactions(Jwt jwt, int pageNumber) {
+    public TransactionPageResponseDto getAllUserTransactions(Jwt jwt, int pageNumber,
+                                                             TransactionSort sortBy) {
         AppUser user = usersService.findUser(jwt.getClaim("sub"));
+
+        int PAGE_SIZE = 10;
+
         Page<Transaction> pageTransactions = repository.findAllByUserId(user.getId(),
-                PageRequest.of(pageNumber, PAGE_SIZE,
-                        Sort.by("date").descending().and(Sort.by("id").descending())));
+                PageRequest.of(pageNumber, PAGE_SIZE, sortBy.getSort()));
 
         int totalPages = pageTransactions.getTotalPages();
 

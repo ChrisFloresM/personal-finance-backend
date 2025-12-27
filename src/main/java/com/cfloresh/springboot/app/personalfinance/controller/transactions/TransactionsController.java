@@ -1,18 +1,16 @@
-package com.cfloresh.springboot.app.personalfinance.controller;
+package com.cfloresh.springboot.app.personalfinance.controller.transactions;
 
 import com.cfloresh.springboot.app.personalfinance.dto.TransactionPageResponseDto;
 import com.cfloresh.springboot.app.personalfinance.dto.TransactionsDto;
 import com.cfloresh.springboot.app.personalfinance.dto.TransactionResponseDto;
+import com.cfloresh.springboot.app.personalfinance.model.transactions.TransactionSort;
 import com.cfloresh.springboot.app.personalfinance.service.transactions.TransactionsService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
-
-import java.util.List;
 
 @RestController
 @RequestMapping("api/transactions")
@@ -33,9 +31,10 @@ public class TransactionsController {
 
     @GetMapping()
     public ResponseEntity<TransactionPageResponseDto> getAllUserTransactions(@AuthenticationPrincipal Jwt jwt,
-                                                                             @RequestParam("page") int pageNumber) {
-        return ResponseEntity.status(HttpStatus.CREATED).body(service.getAllUserTransactions(jwt,
-                pageNumber));
+                                                                             @RequestParam(defaultValue = "0") int page,
+                                                                             @RequestParam(defaultValue = "LATEST") TransactionSort sortBy) {
+        return ResponseEntity.status(HttpStatus.OK).body(service.getAllUserTransactions(jwt,
+                page, sortBy));
     }
 
     @PutMapping("/{transactionId}")
