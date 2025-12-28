@@ -6,6 +6,7 @@ import com.cfloresh.springboot.app.personalfinance.dto.TransactionResponseDto;
 import com.cfloresh.springboot.app.personalfinance.mapper.TransactionsMapper;
 import com.cfloresh.springboot.app.personalfinance.model.transactions.Transaction;
 import com.cfloresh.springboot.app.personalfinance.model.transactions.TransactionSort;
+import com.cfloresh.springboot.app.personalfinance.model.transactions.TransactionsSpeficiations;
 import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import com.cfloresh.springboot.app.personalfinance.repository.transactions.TransactionsRespository;
 import com.cfloresh.springboot.app.personalfinance.service.users.UsersService;
@@ -13,6 +14,7 @@ import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
@@ -47,12 +49,19 @@ public class TransactionsService {
     }
 
     public TransactionPageResponseDto getAllUserTransactions(Jwt jwt, int pageNumber,
-                                                             TransactionSort sortBy) {
+                                                             TransactionSort sortBy,
+                                                             String category, String search) {
+        int PAGE_SIZE = 9;
+
         AppUser user = usersService.findUser(jwt.getClaim("sub"));
 
-        int PAGE_SIZE = 10;
+        /* specification */
+        var specification =
+                Specification.where(TransactionsSpeficiations.hasUserId(user.getId()))
+                        .and(TransactionsSpeficiations.hasCategory(category))
+                        .and(TransactionsSpeficiations.includeSearch(search));
 
-        Page<Transaction> pageTransactions = repository.findAllByUserId(user.getId(),
+        Page<Transaction> pageTransactions = repository.findAll(specification,
                 PageRequest.of(pageNumber, PAGE_SIZE, sortBy.getSort()));
 
         int totalPages = pageTransactions.getTotalPages();

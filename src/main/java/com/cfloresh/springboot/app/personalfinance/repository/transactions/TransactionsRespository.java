@@ -4,10 +4,12 @@ import com.cfloresh.springboot.app.personalfinance.model.transactions.Transactio
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 import java.util.Optional;
 
-public interface TransactionsRespository extends JpaRepository<Transaction, Long> {
+public interface TransactionsRespository extends JpaRepository<Transaction, Long>,
+        JpaSpecificationExecutor<Transaction> {
     public Page<Transaction> findAllByUserId(Long userId, Pageable pageable);
 
     public Optional<Transaction> findByIdAndUser_Id(Long transactionId, Long userId);

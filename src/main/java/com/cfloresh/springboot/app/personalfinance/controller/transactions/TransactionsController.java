@@ -32,9 +32,11 @@ public class TransactionsController {
     @GetMapping()
     public ResponseEntity<TransactionPageResponseDto> getAllUserTransactions(@AuthenticationPrincipal Jwt jwt,
                                                                              @RequestParam(defaultValue = "0") int page,
-                                                                             @RequestParam(defaultValue = "LATEST") TransactionSort sortBy) {
+                                                                             @RequestParam(defaultValue = "LATEST") TransactionSort sortBy,
+                                                                             @RequestParam(defaultValue="ALL") String category,
+                                                                             @RequestParam(defaultValue="") String search) {
         return ResponseEntity.status(HttpStatus.OK).body(service.getAllUserTransactions(jwt,
-                page, sortBy));
+                page, sortBy, category, search));
     }
 
     @PutMapping("/{transactionId}")
