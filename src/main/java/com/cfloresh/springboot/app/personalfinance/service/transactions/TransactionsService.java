@@ -1,8 +1,8 @@
 package com.cfloresh.springboot.app.personalfinance.service.transactions;
 
-import com.cfloresh.springboot.app.personalfinance.dto.TransactionPageResponseDto;
-import com.cfloresh.springboot.app.personalfinance.dto.TransactionsDto;
-import com.cfloresh.springboot.app.personalfinance.dto.TransactionResponseDto;
+import com.cfloresh.springboot.app.personalfinance.dto.transactions.TransactionPageResponseDto;
+import com.cfloresh.springboot.app.personalfinance.dto.transactions.TransactionsDto;
+import com.cfloresh.springboot.app.personalfinance.dto.transactions.TransactionResponseDto;
 import com.cfloresh.springboot.app.personalfinance.mapper.TransactionsMapper;
 import com.cfloresh.springboot.app.personalfinance.model.transactions.Transaction;
 import com.cfloresh.springboot.app.personalfinance.model.transactions.TransactionSort;
@@ -13,15 +13,11 @@ import com.cfloresh.springboot.app.personalfinance.service.users.UsersService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
-
-import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TransactionsService {

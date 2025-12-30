@@ -1,7 +1,7 @@
 package com.cfloresh.springboot.app.personalfinance.mapper;
 
-import com.cfloresh.springboot.app.personalfinance.dto.TransactionsDto;
-import com.cfloresh.springboot.app.personalfinance.dto.TransactionResponseDto;
+import com.cfloresh.springboot.app.personalfinance.dto.transactions.TransactionsDto;
+import com.cfloresh.springboot.app.personalfinance.dto.transactions.TransactionResponseDto;
 import com.cfloresh.springboot.app.personalfinance.model.transactions.Transaction;
 
 public class TransactionsMapper {

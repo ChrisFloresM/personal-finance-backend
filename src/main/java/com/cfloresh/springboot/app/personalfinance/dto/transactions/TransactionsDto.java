@@ -1,4 +1,4 @@
-package com.cfloresh.springboot.app.personalfinance.dto;
+package com.cfloresh.springboot.app.personalfinance.dto.transactions;
 
 
 import jakarta.validation.constraints.NotNull;

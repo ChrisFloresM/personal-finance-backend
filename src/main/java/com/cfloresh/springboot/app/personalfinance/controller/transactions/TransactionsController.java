@@ -1,8 +1,8 @@
 package com.cfloresh.springboot.app.personalfinance.controller.transactions;
 
-import com.cfloresh.springboot.app.personalfinance.dto.TransactionPageResponseDto;
-import com.cfloresh.springboot.app.personalfinance.dto.TransactionsDto;
-import com.cfloresh.springboot.app.personalfinance.dto.TransactionResponseDto;
+import com.cfloresh.springboot.app.personalfinance.dto.transactions.TransactionPageResponseDto;
+import com.cfloresh.springboot.app.personalfinance.dto.transactions.TransactionsDto;
+import com.cfloresh.springboot.app.personalfinance.dto.transactions.TransactionResponseDto;
 import com.cfloresh.springboot.app.personalfinance.model.transactions.TransactionSort;
 import com.cfloresh.springboot.app.personalfinance.service.transactions.TransactionsService;
 import jakarta.validation.Valid;

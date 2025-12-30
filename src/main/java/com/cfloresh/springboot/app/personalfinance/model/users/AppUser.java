@@ -1,5 +1,6 @@
 package com.cfloresh.springboot.app.personalfinance.model.users;
 
+import com.cfloresh.springboot.app.personalfinance.model.pots.Pot;
 import com.cfloresh.springboot.app.personalfinance.model.transactions.Transaction;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -31,4 +32,7 @@ public class AppUser {
     @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
             orphanRemoval = true)
     List<Transaction> transactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "user", fetch = FetchType.LAZY, cascade = CascadeType.ALL, orphanRemoval = true)
+    List<Pot> pots = new ArrayList<>();
 }
