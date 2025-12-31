@@ -35,4 +35,12 @@ public class PotsController {
     public ResponseEntity<List<PotResponseDto>> getPots(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(service.getPots(jwt));
     }
+
+    @DeleteMapping("/{potId}")
+    public ResponseEntity<String> deletePot(@AuthenticationPrincipal Jwt jwt,
+                                          @PathVariable Long potId ) {
+        service.deletePot(jwt, potId);
+
+        return ResponseEntity.status(HttpStatus.NO_CONTENT).body("Pot successfully deleted");
+    }
 }

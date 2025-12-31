@@ -8,4 +8,5 @@ import java.util.List;
 public interface PotsRepository extends JpaRepository<Pot, Long> {
 
     public List<Pot> findAllByUserId(Long userId);
+    public void deleteByIdAndUser_Id(Long potId, Long userId);
 }

@@ -10,8 +10,6 @@ import java.util.Optional;
 
 public interface TransactionsRespository extends JpaRepository<Transaction, Long>,
         JpaSpecificationExecutor<Transaction> {
-    public Page<Transaction> findAllByUserId(Long userId, Pageable pageable);
-
     public Optional<Transaction> findByIdAndUser_Id(Long transactionId, Long userId);
 
     public void deleteByIdAndUser_Id(Long transactionId, Long userId);
