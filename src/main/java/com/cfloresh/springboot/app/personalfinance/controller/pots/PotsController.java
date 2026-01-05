@@ -2,7 +2,6 @@ package com.cfloresh.springboot.app.personalfinance.controller.pots;
 
 import com.cfloresh.springboot.app.personalfinance.dto.pots.PotDto;
 import com.cfloresh.springboot.app.personalfinance.dto.pots.PotResponseDto;
-import com.cfloresh.springboot.app.personalfinance.model.pots.Pot;
 import com.cfloresh.springboot.app.personalfinance.service.pots.PotsService;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
@@ -34,6 +33,13 @@ public class PotsController {
     @GetMapping
     public ResponseEntity<List<PotResponseDto>> getPots(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(service.getPots(jwt));
+    }
+
+    @PutMapping("/{potId}")
+    public ResponseEntity<PotResponseDto> editPot(@AuthenticationPrincipal Jwt jwt,
+                                          @PathVariable Long potId,
+                                          @Valid @RequestBody PotDto potData) {
+        return ResponseEntity.ok(service.editPot(jwt, potId, potData));
     }
 
     @DeleteMapping("/{potId}")

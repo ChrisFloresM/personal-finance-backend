@@ -6,12 +6,15 @@ import com.cfloresh.springboot.app.personalfinance.exception.ForbiddenException;
 import com.cfloresh.springboot.app.personalfinance.exception.ResourceNotFoundException;
 import com.cfloresh.springboot.app.personalfinance.mapper.PotsMapper;
 import com.cfloresh.springboot.app.personalfinance.model.pots.Pot;
+import com.cfloresh.springboot.app.personalfinance.model.transactions.Transaction;
 import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import com.cfloresh.springboot.app.personalfinance.repository.pots.PotsRepository;
 import com.cfloresh.springboot.app.personalfinance.service.users.UsersService;
 import jakarta.transaction.Transactional;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.util.List;
 
@@ -31,10 +34,7 @@ public class PotsService {
 
         Pot pot = new Pot();
         pot.setUser(user);
-        pot.setName(data.name());
-        pot.setTotal(data.total());
-        pot.setTarget(data.target());
-        pot.setTheme(data.theme());
+        setPotData(pot, data);
 
         repository.save(pot);
 
@@ -46,6 +46,20 @@ public class PotsService {
         AppUser user = usersService.findUser(jwt.getClaim("sub"));
 
         return repository.findAllByUserId(user.getId()).stream().map(PotsMapper::toResponseDto).toList();
+    }
+
+    public PotResponseDto editPot(Jwt jwt, Long potId, PotDto potData) {
+        AppUser user = usersService.findUser(jwt.getClaim("sub"));
+
+        Pot pot =
+                repository.findByIdAndUser_Id(potId, user.getId()).orElseThrow(() ->
+                        new ResponseStatusException(HttpStatus.NOT_FOUND,
+                        "Pot not found"));
+
+        setPotData(pot, potData);
+        Pot savedPot = repository.save(pot);
+
+        return PotsMapper.toResponseDto(savedPot);
     }
 
     @Transactional
@@ -61,6 +75,13 @@ public class PotsService {
         }
 
         repository.deleteByIdAndUser_Id(id, user.getId());
+    }
+
+    private void setPotData(Pot pot, PotDto potData) {
+        pot.setName(potData.name());
+        pot.setTotal(potData.total());
+        pot.setTarget(potData.target());
+        pot.setTheme(potData.theme());
     }
 
 }
