@@ -9,6 +9,7 @@ import com.cfloresh.springboot.app.personalfinance.model.transactions.Transactio
 import com.cfloresh.springboot.app.personalfinance.model.transactions.TransactionsSpeficiations;
 import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import com.cfloresh.springboot.app.personalfinance.repository.transactions.TransactionsRespository;
+import com.cfloresh.springboot.app.personalfinance.service.categories.CategoriesService;
 import com.cfloresh.springboot.app.personalfinance.service.users.UsersService;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
@@ -23,10 +24,12 @@ import org.springframework.web.server.ResponseStatusException;
 public class TransactionsService {
     private final TransactionsRespository repository;
     private final UsersService usersService;
+    private final CategoriesService categoriesService;
 
-    public TransactionsService(TransactionsRespository repository, UsersService usersService) {
+    public TransactionsService(TransactionsRespository repository, UsersService usersService, CategoriesService categoriesService) {
         this.repository = repository;
         this.usersService = usersService;
+        this.categoriesService = categoriesService;
     }
 
     public TransactionsDto saveTransaction(Jwt jwt, TransactionsDto data) {
@@ -46,7 +49,7 @@ public class TransactionsService {
 
     public TransactionPageResponseDto getAllUserTransactions(Jwt jwt, int pageNumber,
                                                              TransactionSort sortBy,
-                                                             String category, String search) {
+                                                             Long categoryId, String search) {
         int PAGE_SIZE = 9;
 
         AppUser user = usersService.findUser(jwt.getClaim("sub"));
@@ -54,7 +57,7 @@ public class TransactionsService {
         /* specification */
         var specification =
                 Specification.where(TransactionsSpeficiations.hasUserId(user.getId()))
-                        .and(TransactionsSpeficiations.hasCategory(category))
+                        .and(TransactionsSpeficiations.hasCategory(categoryId))
                         .and(TransactionsSpeficiations.includeSearch(search));
 
         Page<Transaction> pageTransactions = repository.findAll(specification,
@@ -91,9 +94,10 @@ public class TransactionsService {
     }
 
     private void setTransactionData(Transaction transaction, TransactionsDto data) {
+
         transaction.setAvatar(data.avatar());
         transaction.setName(data.name());
-        transaction.setCategory(data.category());
+        transaction.setCategory(categoriesService.findById(data.categoryId()));
         transaction.setDate(data.date());
         transaction.setAmount(data.amount());
         transaction.setRecurring(data.recurring());

@@ -1,5 +1,6 @@
 package com.cfloresh.springboot.app.personalfinance.model.transactions;
 
+import com.cfloresh.springboot.app.personalfinance.model.categories.Category;
 import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import jakarta.persistence.*;
 import lombok.Data;
@@ -21,9 +22,12 @@ public class Transaction {
     @JoinColumn(name = "user_id", nullable = false)
     private AppUser user;
 
+    @ManyToOne(optional = false)
+    @JoinColumn(name = "category_id", nullable = false)
+    private Category category;
+
     private String avatar;
     private String name;
-    private String category;
     private LocalDate date;
 
     @Column(precision = 12, scale = 2, nullable = false)

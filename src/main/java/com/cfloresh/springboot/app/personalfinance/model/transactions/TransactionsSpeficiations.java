@@ -3,13 +3,13 @@ package com.cfloresh.springboot.app.personalfinance.model.transactions;
 import org.springframework.data.jpa.domain.Specification;
 
 public class TransactionsSpeficiations {
-    public static Specification<Transaction> hasCategory(String category) {
+    public static Specification<Transaction> hasCategory(Long categoryId) {
         return (root, query, builder) -> {
-            if (category == null || category.isEmpty() || "ALL".equalsIgnoreCase(category)) {
+            if (categoryId == null || categoryId == 0) {
                 return builder.conjunction();
             }
 
-            return builder.equal(builder.lower(root.get("category")), category.toLowerCase());
+            return builder.equal(root.get("category").get("id"), categoryId);
         };
     }
 
