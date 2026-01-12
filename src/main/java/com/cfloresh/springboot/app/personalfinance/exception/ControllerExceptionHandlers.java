@@ -23,4 +23,9 @@ public class ControllerExceptionHandlers {
     public ResponseEntity<String> ForbbidenException(ForbiddenException e) {
         return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
     }
+
+    @ExceptionHandler(DuplicateBudgetException.class)
+    public ResponseEntity<String> DuplicateBudgetException(DuplicateBudgetException e) {
+        return ResponseEntity.status(HttpStatus.CONFLICT).body(e.getMessage());
+    }
 }

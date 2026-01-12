@@ -26,7 +26,8 @@ public class TransactionsController {
     @PostMapping()
     public ResponseEntity<TransactionsDto> registerTransaction(@AuthenticationPrincipal Jwt jwt,
                                                       @Valid @RequestBody TransactionsDto data) {
-        return ResponseEntity.ok(service.saveTransaction(jwt, data));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.saveTransaction(jwt, data));
     }
 
     @GetMapping()
@@ -40,6 +41,7 @@ public class TransactionsController {
     }
 
     @PutMapping("/{transactionId}")
+
     public ResponseEntity<TransactionResponseDto> updateTransaction(@AuthenticationPrincipal Jwt jwt,
                                                              @PathVariable Long transactionId,
                                                              @RequestBody TransactionsDto data) {

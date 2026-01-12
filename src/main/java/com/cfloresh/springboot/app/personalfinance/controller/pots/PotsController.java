@@ -39,7 +39,8 @@ public class PotsController {
     public ResponseEntity<PotResponseDto> editPot(@AuthenticationPrincipal Jwt jwt,
                                           @PathVariable Long potId,
                                           @Valid @RequestBody PotDto potData) {
-        return ResponseEntity.ok(service.editPot(jwt, potId, potData));
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(service.editPot(jwt, potId, potData));
     }
 
     @DeleteMapping("/{potId}")

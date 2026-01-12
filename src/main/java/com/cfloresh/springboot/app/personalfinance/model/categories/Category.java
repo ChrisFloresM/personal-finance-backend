@@ -1,11 +1,13 @@
 package com.cfloresh.springboot.app.personalfinance.model.categories;
 
+import com.cfloresh.springboot.app.personalfinance.model.budgets.Budget;
 import com.cfloresh.springboot.app.personalfinance.model.transactions.Transaction;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -25,5 +27,9 @@ public class Category {
 
     @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
             orphanRemoval = true)
-    List<Transaction> transactions;
+    List<Transaction> transactions = new ArrayList<>();
+
+    @OneToMany(mappedBy = "category", fetch = FetchType.LAZY, cascade = CascadeType.ALL,
+            orphanRemoval = true)
+    List<Budget> budgets = new ArrayList<>();
 }

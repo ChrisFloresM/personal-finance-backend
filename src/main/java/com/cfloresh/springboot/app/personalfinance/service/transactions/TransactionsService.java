@@ -20,6 +20,8 @@ import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.math.BigDecimal;
+
 @Service
 public class TransactionsService {
     private final TransactionsRespository repository;
@@ -91,6 +93,10 @@ public class TransactionsService {
         AppUser user = usersService.findUser(jwt.getClaim("sub"));
 
         repository.deleteByIdAndUser_Id(transactionId, user.getId());
+    }
+
+    public BigDecimal getTotalSpentByCategory(Long userId, Long categoryId) {
+        return repository.getTotalByUserAndCategory(userId, categoryId);
     }
 
     private void setTransactionData(Transaction transaction, TransactionsDto data) {
