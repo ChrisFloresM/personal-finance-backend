@@ -6,7 +6,8 @@ Full-stack personal finance management application designed to help users track 
 expenses, budgets, and saving goals. This repository contains the backend API built with modern 
 Java technologies and industry best practices.
 
-Related Repository: Frontend Repository
+Related Repository: 
+  [Personal Finance Application - Frontend](https://github.com/ChrisFloresM/personal-finance-frontend)
 
 ## Key Features
 * **Transaction Management:** Complete CRUD operations for income and expense tracking.
