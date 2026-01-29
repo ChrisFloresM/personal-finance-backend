@@ -96,7 +96,7 @@ public class TransactionsService {
     }
 
     public BigDecimal getTotalSpentByCategory(Long userId, Long categoryId) {
-        return repository.getTotalByUserAndCategory(userId, categoryId);
+        return repository.getTotalByUserAndCategory(userId, categoryId).abs();
     }
 
     private void setTransactionData(Transaction transaction, TransactionsDto data) {
