@@ -2,10 +2,13 @@ package com.cfloresh.springboot.app.personalfinance.service;
 
 import com.cfloresh.springboot.app.personalfinance.dto.budgets.BudgetDto;
 import com.cfloresh.springboot.app.personalfinance.dto.budgets.BudgetResponseDto;
+import com.cfloresh.springboot.app.personalfinance.dto.budgets.BudgetResponseWListDto;
+import com.cfloresh.springboot.app.personalfinance.dto.transactions.TransactionResponseDto;
 import com.cfloresh.springboot.app.personalfinance.exception.DuplicateBudgetException;
 import com.cfloresh.springboot.app.personalfinance.mapper.BudgetMapper;
 import com.cfloresh.springboot.app.personalfinance.model.budgets.Budget;
 import com.cfloresh.springboot.app.personalfinance.model.categories.Category;
+import com.cfloresh.springboot.app.personalfinance.model.transactions.Transaction;
 import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import com.cfloresh.springboot.app.personalfinance.repository.budgets.BudgetsRepository;
 import com.cfloresh.springboot.app.personalfinance.service.categories.CategoriesService;
@@ -17,6 +20,8 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 public class BudgetsService {
@@ -67,6 +72,30 @@ public class BudgetsService {
             BigDecimal remaining = budget.getBudgetAmount().add(spent);
 
             return BudgetMapper.toResponseDto(budget, spent, remaining);
+        }).toList();
+    }
+
+    public List<BudgetResponseWListDto> getBudgetsWList(Jwt jwt) {
+        AppUser user = usersService.findUser(jwt.getClaim("sub"));
+
+        List<Budget> budgets = repository.findAllByUserId(user.getId());
+        List<TransactionResponseDto> transactions = transactionsService.getBudgetTransactions(jwt);
+
+        Map<Long, List<TransactionResponseDto>> transactionsByCategory =
+                transactions.stream().collect(Collectors.groupingBy(transaction -> transaction.category().id()));
+
+        return budgets.stream().map(budget -> {
+            List<TransactionResponseDto> budgetTransactions = transactionsByCategory
+                    .getOrDefault(budget.getCategory().getId(), List.of())
+                    .stream()
+                    .limit(3)
+                    .toList();
+
+            BigDecimal spent = calculateBudgetSpent(budget);
+            BigDecimal remaining = budget.getBudgetAmount().add(spent);
+
+            return BudgetMapper.toResponseWListDto(budget, spent, remaining, budgetTransactions);
+
         }).toList();
     }
 

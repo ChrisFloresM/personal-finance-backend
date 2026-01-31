@@ -2,6 +2,7 @@ package com.cfloresh.springboot.app.personalfinance.controller.budgets;
 
 import com.cfloresh.springboot.app.personalfinance.dto.budgets.BudgetDto;
 import com.cfloresh.springboot.app.personalfinance.dto.budgets.BudgetResponseDto;
+import com.cfloresh.springboot.app.personalfinance.dto.budgets.BudgetResponseWListDto;
 import com.cfloresh.springboot.app.personalfinance.service.BudgetsService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -23,6 +24,11 @@ public class BudgetsController {
     @GetMapping
     public ResponseEntity<List<BudgetResponseDto>> getBudgets(@AuthenticationPrincipal Jwt jwt) {
         return ResponseEntity.ok(service.getBudgets(jwt));
+    }
+
+    @GetMapping("overview")
+    public ResponseEntity<List<BudgetResponseWListDto>> getBudgetsWList(@AuthenticationPrincipal Jwt jwt) {
+        return ResponseEntity.ok(service.getBudgetsWList(jwt));
     }
 
     @PostMapping

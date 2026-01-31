@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 @Service
 public class TransactionsService {
@@ -68,6 +69,16 @@ public class TransactionsService {
         int totalPages = pageTransactions.getTotalPages();
 
         return new TransactionPageResponseDto(pageTransactions.stream().map(TransactionsMapper::toResponseDto).toList(), totalPages);
+    }
+
+    public List<TransactionResponseDto> getBudgetTransactions(Jwt jwt) {
+        AppUser user = usersService.findUser(jwt.getClaim("sub"));
+
+
+        List<Transaction> budgetTransactions =
+                repository.findByUserIdOrderByDateDesc(user.getId());
+
+        return budgetTransactions.stream().map(TransactionsMapper::toResponseDto).toList();
     }
 
 
