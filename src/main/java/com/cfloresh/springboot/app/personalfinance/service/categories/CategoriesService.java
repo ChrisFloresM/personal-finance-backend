@@ -5,7 +5,7 @@ import com.cfloresh.springboot.app.personalfinance.exception.ResourceNotFoundExc
 import com.cfloresh.springboot.app.personalfinance.mapper.CategoryMapper;
 import com.cfloresh.springboot.app.personalfinance.model.categories.Category;
 import com.cfloresh.springboot.app.personalfinance.repository.categories.CategoryRepository;
-import com.cfloresh.springboot.app.personalfinance.service.users.UsersService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,21 +13,33 @@ import java.util.stream.Collectors;
 import java.util.stream.StreamSupport;
 
 @Service
+@Slf4j
 public class CategoriesService {
 
     private final CategoryRepository repository;
 
-    public CategoriesService(CategoryRepository repository, UsersService usersService) {
+    public CategoriesService(CategoryRepository repository) {
         this.repository = repository;
     }
 
     public List<CategoryResponseDto> getAllCategories() {
-        return StreamSupport.stream(repository.findAll().spliterator(), false).map(CategoryMapper
-        ::toResponseDto).collect(Collectors.toList());
+        log.debug("Fetching all categories");
+
+        List<CategoryResponseDto> categories = StreamSupport.stream(repository.findAll().spliterator(), false)
+                .map(CategoryMapper::toResponseDto)
+                .collect(Collectors.toList());
+
+        log.info("Retrieved {} categories", categories.size());
+
+        return categories;
     }
 
     public Category findById(Long id) {
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("Category " +
-                "couldn't be found"));
+        log.debug("Fetching category with id: {}", id);
+
+        return repository.findById(id).orElseThrow(() -> {
+            log.warn("Category with id: {} not found", id);
+            return new ResourceNotFoundException("Category couldn't be found");
+        });
     }
 }

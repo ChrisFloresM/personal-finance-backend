@@ -2,11 +2,13 @@ package com.cfloresh.springboot.app.personalfinance.service.users;
 
 import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import com.cfloresh.springboot.app.personalfinance.repository.users.UsersRepository;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
 @Service
+@Slf4j
 public class UsersService {
 
     private final UsersRepository repository;
@@ -31,12 +33,21 @@ public class UsersService {
 
     public AppUser findUser(String authId) {
         AppUser user = repository.findByAuthId(authId);
-        if (user != null) return user;
+        Long userId;
 
+        if (user != null) {
+            userId = user.getId();
+            log.info("User found for authId: {} with Id: {}", authId, userId);
+            return user;
+        };
+
+        log.debug("Creating new user for authId: {}", authId);
         user = new AppUser();
         user.setAuthId(authId);
 
-        repository.save(user);
+        AppUser savedUser = repository.save(user);
+        userId = savedUser.getId();
+        log.info("Created new user for authId {} with Id {}", authId, userId);
 
         return user;
     }

@@ -5,13 +5,12 @@ import com.cfloresh.springboot.app.personalfinance.dto.overview.OverviewProjecti
 import com.cfloresh.springboot.app.personalfinance.model.users.AppUser;
 import com.cfloresh.springboot.app.personalfinance.repository.transactions.TransactionsRespository;
 import com.cfloresh.springboot.app.personalfinance.service.users.UsersService;
-import org.hibernate.sql.ast.tree.expression.Over;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.stereotype.Service;
 
-import java.math.BigDecimal;
-
 @Service
+@Slf4j
 public class OverviewService {
     private final TransactionsRespository repository;
     private final UsersService usersService;
@@ -22,9 +21,16 @@ public class OverviewService {
     }
 
     public OverviewDto getOverview(Jwt jwt) {
-        AppUser user = usersService.findUser(jwt.getClaim("sub"));
+        String userSub = jwt.getClaim("sub");
+        log.debug("Fetching overview data for user: {}", userSub);
+
+        AppUser user = usersService.findUser(userSub);
 
         OverviewProjection overviewData = repository.getOverviewData(user.getId());
+
+        log.info("Overview data retrieved for user with id: {} - Balance: {}, Income: {}, Expenses: {}",
+                user.getId(), overviewData.getBalance(), overviewData.getIncome(),
+                overviewData.getExpenses().abs());
 
         return new OverviewDto(overviewData.getBalance(), overviewData.getIncome(),
                 overviewData.getExpenses().abs());
