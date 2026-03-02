@@ -15,7 +15,6 @@ import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/transactions")
-@CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
 public class TransactionsController {
 

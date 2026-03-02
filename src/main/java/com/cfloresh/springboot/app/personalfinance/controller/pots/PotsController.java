@@ -15,7 +15,6 @@ import java.util.List;
 
 @RestController
 @RequestMapping("api/pots")
-@CrossOrigin(origins = "http://localhost:5173")
 @Slf4j
 public class PotsController {
 
