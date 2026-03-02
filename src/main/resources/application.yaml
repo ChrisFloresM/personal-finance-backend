@@ -16,3 +16,6 @@ spring:
 
   jpa:
     database-platform: org.hibernate.dialect.PostgreSQLDialect
+
+allowed:
+  origins: ${ALLOWED_ORIGINS:http://localhost:5173}
