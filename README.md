@@ -19,9 +19,10 @@ Related Repository:
 * **Pagination:** For large datasets of user transactions
 * **Sorting and filtering:** Features to sort and filter user transactions by different 
   categories and parameters.
+* **Budget planning to create and monitor budgets with category-based allocation.
 
 ### In development:
-* Budget planning to create and monitor budgets with category-based allocation.
+
 
 ## Tech Stack
 * **Java 25** - Modern Java features and performance
